@@ -7,7 +7,7 @@ on:
     branches: [ main ]
 
 env:
-  JAVA_VERSION: '17'
+  JAVA_VERSION: '21'
   NODE_VERSION: '18'
 
 jobs:
@@ -44,7 +44,7 @@ jobs:
             -Dsonar.projectKey=Todo \
             -Dsonar.organization=r-vikas26 \
             -Dsonar.host.url=https://sonarcloud.io \
-            -Dsonar.login=${{ secrets.SONAR_TOKEN }}
+            -Dsonar.login=${{ secrets.QODANA_TOKEN }}
 
   # Unit Tests
   unit-tests:
