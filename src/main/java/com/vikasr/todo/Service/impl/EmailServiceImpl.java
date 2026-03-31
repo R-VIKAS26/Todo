@@ -134,6 +134,12 @@ public class EmailServiceImpl implements EmailService {
     @Override
     public CompletableFuture<Void> sendEmail(String to, String subject, String body) {
         return CompletableFuture.runAsync(() -> {
+            if (!isMailDeliveryEnabled()) {
+                log.info("Mail delivery is disabled. Skipping email to {}: {}", to, subject);
+                log.info("Email content (mail disabled): To={}, Subject={}, Body={}", to, subject, body);
+                return;
+            }
+            
             try {
                 MimeMessage message = mailSender.createMimeMessage();
                 MimeMessageHelper helper = new MimeMessageHelper(message, true);
