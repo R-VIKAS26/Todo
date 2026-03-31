@@ -123,6 +123,7 @@ class TodoControllerIntegrationTests {
     }
 
     @Test
+    @Transactional
     void completeFromEmailMarksTodoCompleteWhenTokenMatches() throws Exception {
         Todo todo = new Todo();
         todo.setTitle("Finish taxes");
@@ -238,6 +239,7 @@ class TodoControllerIntegrationTests {
     }
 
     @Test
+    @Transactional
     void timerEndpointsStartPauseAndStopTrackingTime() throws Exception {
         Todo todo = new Todo();
         todo.setTitle("Deep work");
@@ -292,6 +294,7 @@ class TodoControllerIntegrationTests {
     }
 
     @Test
+    @Transactional
     void undoAndRedoRestoreCreateAndDeleteOperations() throws Exception {
         String createResponse = mockMvc.perform(post("/api/v1/todos")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -338,6 +341,7 @@ class TodoControllerIntegrationTests {
     }
 
     @Test
+    @Transactional
     void sharedListMemberCanCreateUpdateDeleteAndReorderTodos() throws Exception {
         Long listId = createSharedList("owner@example.com", "member@example.com");
 
@@ -398,6 +402,7 @@ class TodoControllerIntegrationTests {
     }
 
     @Test
+    @Transactional
     void sharedListRejectsOutsiderForCreateReadUpdateDeleteAndReorder() throws Exception {
         Long listId = createSharedList("owner@example.com", "member@example.com");
 
@@ -529,6 +534,7 @@ class TodoControllerIntegrationTests {
     }
 
     @Test
+    @Transactional
     void importAndExportExcelRoundTripWorks() throws Exception {
         MockMultipartFile file = new MockMultipartFile(
                 "file",
