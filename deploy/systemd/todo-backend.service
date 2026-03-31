@@ -1,0 +1,18 @@
+[Unit]
+Description=Todo backend
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=todo
+Group=todo
+WorkingDirectory=/opt/todo
+EnvironmentFile=/etc/todo/todo-backend.env
+ExecStart=/usr/bin/java -jar /opt/todo/app.jar
+Restart=always
+RestartSec=5
+SuccessExitStatus=143
+
+[Install]
+WantedBy=multi-user.target

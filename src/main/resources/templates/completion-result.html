@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${pageTitle}">Todo Status</title>
+    <style>
+        :root {
+            color-scheme: light;
+        }
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: grid;
+            place-items: center;
+            padding: 24px;
+            font-family: "Segoe UI", Arial, sans-serif;
+            background:
+                radial-gradient(circle at top, var(--accent-soft) 0%, #ffffff 40%),
+                linear-gradient(135deg, #f8fafc 0%, #eef2ff 100%);
+            color: #0f172a;
+        }
+        .shell {
+            width: min(760px, 100%);
+            position: relative;
+        }
+        .confetti {
+            position: absolute;
+            inset: -8px;
+            pointer-events: none;
+            z-index: 2;
+        }
+        .piece {
+            position: absolute;
+            width: 10px;
+            height: 22px;
+            border-radius: 999px;
+            opacity: 0.9;
+            animation: drift 4.5s ease-in-out infinite;
+        }
+        .p1 { top: 20px; left: 8%; background: #16a34a; transform: rotate(18deg); }
+        .p2 { top: 54px; left: 18%; background: #f59e0b; animation-delay: 0.4s; }
+        .p3 { top: 12px; right: 16%; background: #38bdf8; transform: rotate(-12deg); animation-delay: 0.8s; }
+        .p4 { top: 60px; right: 8%; background: #f43f5e; animation-delay: 1.2s; }
+        .p5 { top: 110px; left: 12%; background: #8b5cf6; transform: rotate(-18deg); animation-delay: 1.6s; }
+        .p6 { top: 118px; right: 22%; background: #22c55e; animation-delay: 2s; }
+        .halo {
+            position: absolute;
+            inset: -18px;
+            background: linear-gradient(135deg, var(--accent-strong), rgba(255,255,255,0.7));
+            filter: blur(22px);
+            opacity: 0.7;
+            z-index: 0;
+        }
+        .card {
+            position: relative;
+            z-index: 1;
+            overflow: hidden;
+            background: rgba(255,255,255,0.92);
+            border: 1px solid rgba(148,163,184,0.2);
+            border-radius: 28px;
+            box-shadow: 0 24px 80px rgba(15,23,42,0.16);
+            padding: 40px;
+        }
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 20px;
+        }
+        .brand-mark {
+            width: 48px;
+            height: 48px;
+            display: grid;
+            place-items: center;
+            border-radius: 16px;
+            background: linear-gradient(135deg, var(--accent-strong), #0f172a);
+            color: white;
+            font-size: 22px;
+            font-weight: 800;
+            letter-spacing: 0.04em;
+            box-shadow: 0 14px 30px rgba(15,23,42,0.18);
+        }
+        .brand-name {
+            font-size: 15px;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: #0f172a;
+        }
+        .brand-tagline {
+            margin-top: 3px;
+            font-size: 14px;
+            color: #64748b;
+        }
+        .card::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(120deg, rgba(255,255,255,0.7), transparent 38%);
+            pointer-events: none;
+        }
+        .pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 16px;
+            border-radius: 999px;
+            background: var(--accent-soft);
+            color: var(--accent-strong);
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: 0.02em;
+            text-transform: uppercase;
+        }
+        .hero {
+            margin-top: 18px;
+            display: flex;
+            align-items: flex-start;
+            gap: 18px;
+        }
+        .status-orb {
+            width: 72px;
+            height: 72px;
+            flex: 0 0 auto;
+            display: grid;
+            place-items: center;
+            border-radius: 24px;
+            background: linear-gradient(145deg, var(--accent-soft), white);
+            color: var(--accent-strong);
+            font-size: 34px;
+            font-weight: 800;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.9), 0 16px 30px rgba(15,23,42,0.08);
+        }
+        .hero-copy {
+            min-width: 0;
+        }
+        h1 {
+            margin: 0 0 12px;
+            font-size: clamp(32px, 6vw, 48px);
+            line-height: 1.05;
+        }
+        .lead {
+            margin: 0;
+            font-size: 18px;
+            line-height: 1.6;
+            color: #334155;
+            max-width: 52ch;
+        }
+        .grid {
+            margin-top: 28px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px;
+        }
+        .metric {
+            padding: 18px;
+            border-radius: 20px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+        }
+        .metric .label {
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #64748b;
+        }
+        .metric .value {
+            margin-top: 10px;
+            font-size: 20px;
+            font-weight: 700;
+            line-height: 1.35;
+        }
+        .actions {
+            margin-top: 28px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 14px;
+        }
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 14px 20px;
+            border-radius: 16px;
+            font-weight: 700;
+            text-decoration: none;
+            transition: transform 140ms ease, box-shadow 140ms ease;
+        }
+        .btn-primary {
+            background: var(--accent-strong);
+            color: white;
+            box-shadow: 0 16px 30px color-mix(in srgb, var(--accent-strong) 32%, transparent);
+        }
+        .btn-secondary {
+            background: white;
+            color: #0f172a;
+            border: 1px solid #cbd5e1;
+        }
+        .btn:hover {
+            transform: translateY(-1px);
+        }
+        .footer {
+            margin-top: 28px;
+            font-size: 14px;
+            color: #64748b;
+        }
+        @media (max-width: 640px) {
+            .card {
+                padding: 28px;
+            }
+            .hero {
+                flex-direction: column;
+            }
+            .status-orb {
+                width: 60px;
+                height: 60px;
+                border-radius: 20px;
+                font-size: 28px;
+            }
+        }
+        @keyframes drift {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(8px) rotate(8deg); }
+        }
+    </style>
+</head>
+<body th:style="'--accent-soft:' + ${accentSoft} + ';--accent-strong:' + ${accentStrong}">
+<div class="shell">
+    <div class="halo"></div>
+    <div class="confetti" th:if="${successState}">
+        <span class="piece p1"></span>
+        <span class="piece p2"></span>
+        <span class="piece p3"></span>
+        <span class="piece p4"></span>
+        <span class="piece p5"></span>
+        <span class="piece p6"></span>
+    </div>
+    <section class="card">
+        <div class="brand">
+            <div class="brand-mark">T</div>
+            <div>
+                <div class="brand-name" th:text="${brandName}">Todo App</div>
+                <div class="brand-tagline" th:text="${brandTagline}">Focused work, clear outcomes.</div>
+            </div>
+        </div>
+        <div class="pill" th:text="${statusLabel}">Status</div>
+        <div class="hero">
+            <div class="status-orb" th:text="${statusIcon}">✓</div>
+            <div class="hero-copy">
+                <h1 th:text="${headline}">Task status</h1>
+                <p class="lead" th:text="${supportingText}">Status details</p>
+            </div>
+        </div>
+        <div class="grid">
+            <div class="metric">
+                <div class="label">Task</div>
+                <div class="value" th:text="${taskTitle}">Task</div>
+            </div>
+            <div class="metric">
+                <div class="label">Scheduled</div>
+                <div class="value" th:text="${scheduleLabel}">No schedule set</div>
+            </div>
+        </div>
+        <div class="actions">
+            <a class="btn btn-primary" th:href="${appLink}">Open Todo App</a>
+            <a class="btn btn-secondary" th:href="'mailto:vikas.r.2683@gmail.com?subject=Todo%20Update&amp;body=' + ${shareBody}">Share Update</a>
+        </div>
+        <div class="footer" th:text="${footerText}">Status details</div>
+    </section>
+</div>
+</body>
+</html>
