@@ -90,6 +90,7 @@ class TodoControllerIntegrationTests {
     }
 
     @Test
+    @Transactional
     void manualReminderEndpointSendsEmailImmediately() throws Exception {
         MimeMessage mimeMessage = new MimeMessage(Session.getInstance(new Properties()));
         when(mailSender.createMimeMessage()).thenReturn(mimeMessage);
