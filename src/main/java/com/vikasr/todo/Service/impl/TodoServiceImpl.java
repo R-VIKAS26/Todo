@@ -30,6 +30,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -183,6 +184,7 @@ public class TodoServiceImpl implements TodoService {
     }
 
     @Override
+    @Transactional
     public void markComplete(Long id) {
         Todo todo = todoRepo.findById(id).orElseThrow();
         validateDependenciesCompleted(todo);
@@ -397,6 +399,7 @@ public class TodoServiceImpl implements TodoService {
         todoHistoryRepo.save(history);
     }
 
+    @Transactional
     private TodoSnapshotDTO snapshot(Todo todo) {
         TodoSnapshotDTO snapshot = new TodoSnapshotDTO();
         snapshot.setId(todo.getId());
